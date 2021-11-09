@@ -47,3 +47,7 @@ p3 <- ggplot(df_wide_wind) +
   theme_minimal(); p3
 
 p1 / p2 / p3 +plot_layout(guides = 'collect')
+
+plot(ln$lake.number, df_wide_wind$wind_speed)
+plot(df_wide_wind$wtr_0-df_wide_wind$wtr_2, df_wide_wind$wind_speed)
+plot(df_wide_wind$wind_speed, df_wide_wind$wtr_0-df_wide_wind$wtr_2)
