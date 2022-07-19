@@ -26,14 +26,18 @@ idx = match(wnd$datetime,df$datetime)
 df = df[idx,]
 
 ssi <-ts.schmidt.stability(df, bathy)
-plot(schmidt_st, ylab='Schmidt stability', xlab='Date')
+plot(ssi, ylab='Schmidt stability', xlab='Date')
 zv <- bathy$depths %*% bathy$areas / sum(bathy$areas )
+
+metaDeps <- ts.meta.depths(wtr = df)
+
+epi.temp <- ts.layer.temperature(wtr = df, top = 0, bottom = metaDeps$top, bathy = bathy, na.rm = T)
+hypo.temp <- ts.layer.temperature(wtr = df, top = metaDeps$top, bottom = max(bathy$depths), bathy = bathy, na.rm = T)
 
 wnd_shear <- 1.310e-3 * 1.4310e-3 * wnd$wnd^2
 wnd_shear <- uStar(wndSpeed = wnd$wnd, wndHeight = wnd.height, 
-                   averageEpiDense = water.density(df$wtr_0.75) )
+                   averageEpiDense = water.density(epi.temp$layer.temp))
 
-metaDeps <- ts.meta.depths(wtr = df)
 
 bthA = bathy$areas
 bthD = bathy$depths
@@ -41,7 +45,7 @@ uStar = sqrt(wnd_shear)
 St = ssi
 metaT = metaDeps$top
 metaB = metaDeps$bottom
-averageHypoDense = water.density(df$wtr_2) 
+averageHypoDense = water.density(hypo.temp$layer.temp) 
 g	<-	9.81
 dz	<-	0.1
 # if bathymetry has negative values, remove.
